@@ -5,12 +5,12 @@ import PageHeader from '../template/pageHeader'
 import TodoForm from './todoForm'
 import TodoList from './todoList'
 
-const URL = 'http://localhost:3003/api/todos'
+const URL = 'http://localhost:3003/api/cadastros'
 
-export default class Todo extends Component {
+export default class Cadastro extends Component {
     constructor(props) {
         super(props)
-        this.state = { description: '', list: [] }
+        this.state = { name: '', list: [] }
 
         this.handleChange = this.handleChange.bind(this)
         this.handleAdd = this.handleAdd.bind(this)
@@ -23,10 +23,10 @@ export default class Todo extends Component {
         this.refresh()
     }
 
-    refresh(description = '') {
-        const search = description ? `&description__regex=/${description}/` : '';
+    refresh(name = '') {
+        const search = name ? `&name__regex=/${name}/` : '';
         axios.get(`${URL}?sort=-createdAt${search}`)
-            .then(resp => this.setState({ ...this.state, description, list: resp.data }))
+            .then(resp => this.setState({ ...this.state, name, list: resp.data }))
 
     }
 
@@ -34,39 +34,39 @@ export default class Todo extends Component {
         this.refresh()
     }
 
-    handleMarkAsDone(todo) {
-        axios.put(`${URL}/${todo._id}`, { ...todo, done: true })
-            .then(resp => this.refresh(this.state.description))
+    handleMarkAsDone(Todocadastro) {
+        axios.put(`${URL}/${Todocadastro._id}`, { ...Todocadastro, done: false })
+            .then(resp => this.refresh(this.state.name))
     }
-    handleMarkAsPending(todo) {
-        axios.put(`${URL}/${todo._id}`, { ...todo, done: false })
-            .then(resp => this.refresh(this.state.description))
+    handleMarkAsPending(Todocadastro) {
+        axios.put(`${URL}/${Todocadastro._id}`, { ...Todocadastro, done: false })
+            .then(resp => this.refresh(this.state.name))
     }
     handleSearch() {
-        this.refresh(this.state.description)
+        this.refresh(this.state.name)
     }
 
     handleChange(e) {
-        this.setState({ ...this.state, description: e.target.value })
+        this.setState({ ...this.state, name: e.target.value })
     }
 
     handleAdd() {
-        const description = this.state.description
-        axios.post(URL, { description })
+        const name = this.state.name
+        axios.post(URL, { name })
             .then(resp => this.refresh())
     }
 
-    handleRemove(todo) {
-        axios.delete(`${URL}/${todo._id}`)
-            .then(resp => this.refresh(this.state.description))
+    handleRemove(Todocadastro) {
+        axios.delete(`${URL}/${Todocadastro._id}`)
+            .then(resp => this.refresh(this.state.name))
     }
 
     render() {
         return (
             <div>
-                <PageHeader name='Tarefas' small='Tarefas'></PageHeader>
+                <PageHeader name='Cadastro' small='Pessoas'></PageHeader>
                 <TodoForm
-                    description={this.state.description}
+                    name={this.state.name}
                     handleChange={this.handleChange}
                     handleAdd={this.handleAdd}
                     handleSearch={this.handleSearch}
